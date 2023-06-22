@@ -1,0 +1,51 @@
+<h1>Search for Flights</h1>
+
+<%= form_tag('/flights/search', method: 'get') do %>
+  <div>
+    <%= label_tag(:departure_airport_id, 'Departure Airport:') %>
+    <%= select_tag(:departure_airport_id, options_for_select(@airports.map { |a| [a.name, a.id] })) %>
+  </div>
+
+  <div>
+    <%= label_tag(:arrival_airport_id, 'Arrival Airport:') %>
+    <%= select_tag(:arrival_airport_id, options_for_select(@airports.map { |a| [a.name, a.id] })) %>
+  </div>
+
+  <div>
+    <%= label_tag(:date, 'Date:') %>
+    <%= select_date(Date.today, prefix: :date, include_blank: true, order: [:month, :day, :year], start_year: Date.today.year, end_year: Date.today.year + 1, use_month_names: Date::MONTHNAMES.compact) %>
+  </div>
+
+  <%# <%= hidden_field_tag 'booking[passengers][][passenger_count]', params[:passengers] %> 
+
+  <div>
+    <%= label_tag(:passengers, 'Passengers:') %>
+    <%= select_tag(:passengers, options_for_select((1..4).map { |n| [n, n] })) %>
+  </div>
+
+  <%= submit_tag('Search') %>
+<% end %>
+
+<h1>Available Flights</h1>
+
+<% if @flights.any? %>
+  <%= form_tag(new_booking_path, method: 'get') do %>
+    <% @flights.each do |flight| %>
+      <div>
+        <%= radio_button_tag :flight_id, flight.id %>
+        <h3><%= flight.departure_airport.name %> to <%= flight.arrival_airport.name %></h3>
+        <p><%= flight.start_datetime.strftime('%m/%d/%Y %I:%M %p') %></p>
+    
+
+        <%# hidden_field_tag 'booking[passengers_attributes][][flight_id]', flight.id %>
+        <%# hidden_field_tag 'booking[passengers_attributes][][passenger_count]', params[:passengers] %>
+        <%= hidden_field_tag 'booking[passenger_count]', "2" %>
+
+
+      </div>
+      <%= submit_tag('Choose this flight') %>
+    <% end %>
+  <% end %>
+<% else %>
+  <p>No flights found for selected criteria</p>
+<% end %>

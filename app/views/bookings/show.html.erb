@@ -1,0 +1,14 @@
+<!-- bookings/show.html.erb -->
+<p>Booking Confirm!</p>
+
+<p>You have booked a flight from 
+  <% if @booking.flight.departure_airport.present? %>
+    <%= @booking.flight.departure_airport.name %>
+  <% end %>
+  to
+  <% if @booking.flight.arrival_airport.present? %>
+    <%= @booking.flight.arrival_airport.name %>
+  <% end %>
+  on <%= @booking.flight.start_datetime.strftime('%m/%d/%Y %I:%M %p') %>.
+  There are <%= @booking.passengers_count %> passengers.
+</p>
